@@ -1,29 +1,26 @@
 -- migrate:up
-create table company_type (
-   id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-   type varchar(255) NOT NULL
+CREATE TYPE company_type AS ENUM ('individual_company', 'subsidiary', 'management_company');
+
+CREATE TABLE company (
+  PRIMARY KEY(se, cvr),
+  se INTEGER,
+  cvr INTEGER,
+  name TEXT NOT NULL,
+  type company_type NOT NULL
 );
 
-create table company (
-  se INT,
-  cvr INT,
-  name varchar(255) NOT NULL,
-  company_type_id INT REFERENCES company_type (id) NOT NULL,
-  PRIMARY KEY(se, cvr)
-);
-
-create table tax_record (
-  id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  taxable_income FLOAT NOT NULL,
-  year INT NOT NULL,
-  deficit FLOAT NOT NULL,
-  corporate_tax FLOAT NOT NULL,
-  company_cvr INT NOT NULL,
-  company_se INT NOT NULL,
+CREATE TABLE tax_record (
+  id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  taxable_income BIGINT NOT NULL,
+  year SMALLINT NOT NULL,
+  deficit BIGINT NOT NULL,
+  corporate_tax BIGINT NOT NULL,
+  company_cvr INTEGER NOT NULL,
+  company_se INTEGER NOT NULL,
   FOREIGN KEY (company_cvr, company_se) REFERENCES company (cvr, se)
 );
 
 -- migrate:down
-DROP TABLE company_type CASCADE;
 DROP TABLE company CASCADE;
 DROP TABLE tax_record CASCADE;
+DROP TYPE company_type;
