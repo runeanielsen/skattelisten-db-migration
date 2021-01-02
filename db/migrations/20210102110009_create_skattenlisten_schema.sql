@@ -17,7 +17,8 @@ CREATE TABLE tax_record (
   corporate_tax BIGINT NOT NULL,
   company_cvr INTEGER NOT NULL,
   company_se INTEGER NOT NULL,
-  FOREIGN KEY (company_cvr, company_se) REFERENCES company (cvr, se)
+  FOREIGN KEY (company_cvr, company_se) REFERENCES company (cvr, se),
+  CONSTRAINT one_tax_record_per_year UNIQUE(company_cvr, company_se, year)
 );
 
 -- migrate:down
